@@ -18,7 +18,6 @@ public class PaymentRepository {
     }
 
     private void readPayments(){
-        //ClassLoader classLoader = PaymentRepository.class.getClassLoader();
         File file = new File(filename);
         BufferedReader br = null;
         try {
@@ -29,15 +28,13 @@ public class PaymentRepository {
                 paymentList.add(payment);
             }
             br.close();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
     private Payment getPayment(String line){
-        Payment item=null;
+        Payment item;
         if (line==null|| line.equals("")) return null;
         StringTokenizer st=new StringTokenizer(line, ",");
         int tableNumber= Integer.parseInt(st.nextToken());
@@ -57,7 +54,6 @@ public class PaymentRepository {
     }
 
     public void writeAll(){
-        //ClassLoader classLoader = PaymentRepository.class.getClassLoader();
         File file = new File(filename);
 
         BufferedWriter bw = null;

@@ -14,7 +14,7 @@ import pizzashop.gui.KitchenGUI;
 import pizzashop.model.PaymentType;
 import pizzashop.repository.MenuRepository;
 import pizzashop.repository.PaymentRepository;
-import pizzashop.service.PizzaService;
+import pizzashop.service.PaymentService;
 
 import java.util.Optional;
 
@@ -25,7 +25,7 @@ public class Main extends Application {
 
         MenuRepository repoMenu=new MenuRepository();
         PaymentRepository payRepo= new PaymentRepository();
-        PizzaService service = new PizzaService(repoMenu, payRepo);
+        PaymentService service = new PaymentService(repoMenu, payRepo);
 
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/mainFXML.fxml"));
         //VBox box = loader.load();
@@ -42,8 +42,8 @@ public class Main extends Application {
                 Optional<ButtonType> result = exitAlert.showAndWait();
                 if (result.get() == ButtonType.YES){
                     //Stage stage = (Stage) this.getScene().getWindow();
-                    System.out.println("Incasari cash: "+service.getTotalAmount(PaymentType.Cash));
-                    System.out.println("Incasari card: "+service.getTotalAmount(PaymentType.Card));
+                    System.out.println("Incasari cash: "+service.getTotalAmount(PaymentType.CASH));
+                    System.out.println("Incasari card: "+service.getTotalAmount(PaymentType.CARD));
 
                     primaryStage.close();
                 }

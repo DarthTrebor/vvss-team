@@ -1,4 +1,0 @@
---patch-module
-pizzashop=_
---add-reads
-pizzashop=ALL-UNNAMED

@@ -17,6 +17,15 @@ public class PaymentRepository {
         readPayments();
     }
 
+    public PaymentRepository(boolean initializeEmpty) {
+        if (initializeEmpty) {
+            this.paymentList = new ArrayList<>();
+        } else {
+            this.paymentList = null;
+        }
+        readPayments();
+    }
+
     private void readPayments(){
         File file = new File(filename);
         BufferedReader br = null;

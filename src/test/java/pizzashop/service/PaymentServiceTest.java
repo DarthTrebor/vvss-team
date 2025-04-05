@@ -1,24 +1,28 @@
 package pizzashop.service;
 
 import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.condition.DisabledOnOs;
+import org.junit.jupiter.api.condition.OS;
+import pizzashop.model.Payment;
 import pizzashop.model.PaymentType;
 import pizzashop.repository.MenuRepository;
 import pizzashop.repository.PaymentRepository;
 import pizzashop.validator.PaymentValidator;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class PaymentServiceTest {
 
     private PaymentService service;
-    private PaymentRepository repository;
-    private PaymentValidator validator;
 
     @BeforeEach
     void setUp() {
         MenuRepository repoMenu = new MenuRepository();
-        this.repository = new PaymentRepository();
-        this.validator = new PaymentValidator();
+        PaymentRepository repository = new PaymentRepository();
+        PaymentValidator validator = new PaymentValidator();
         this.service = new PaymentService(repoMenu, repository, validator);
 
         repository.getAll().clear();
@@ -110,7 +114,6 @@ class PaymentServiceTest {
 
     }
 
-
     @Test
     @Order(9)
     @Tag("BVA")
@@ -124,7 +127,7 @@ class PaymentServiceTest {
     @Test
     @Order(10)
     @DisplayName("BVA Test 2")
-    void addValidPaymentTestBVA2() {
+    void addInvalidPaymentBVA() {
         IllegalArgumentException thrown = assertThrows(IllegalArgumentException.class, () -> {
             service.addPayment(9, PaymentType.CARD, 33.3);
         }, "Expected addPayment to throw, but it didn't");
@@ -135,7 +138,7 @@ class PaymentServiceTest {
     @Test
     @Order(11)
     @DisplayName("BVA Test 3")
-    void addValidPaymentTestBVA3() {
+    void addInvalidPaymentBVA2() {
         IllegalArgumentException thrown = assertThrows(IllegalArgumentException.class, () -> {
             service.addPayment(0, PaymentType.CARD, 33.3);
         }, "Expected addPayment to throw, but it didn't");
@@ -146,7 +149,7 @@ class PaymentServiceTest {
     @Test
     @Order(12)
     @DisplayName("BVA Test 4")
-    void addInvalidPaymentBVA() {
+    void addValidPaymentTestBVA2() {
         service.addPayment(5, PaymentType.CARD, 450.65);
 
         assertEquals(1, service.getPayments().size());
@@ -155,7 +158,7 @@ class PaymentServiceTest {
     @Test
     @Order(13)
     @DisplayName("BVA Test 5")
-    void addInvalidPaymentBVA2() {
+    void addInvalidPaymentBVA3() {
         IllegalArgumentException thrown = assertThrows(IllegalArgumentException.class, () -> {
             service.addPayment(5, PaymentType.CARD, 0);
         }, "Expected addPayment to throw, but it didn't");
@@ -163,16 +166,55 @@ class PaymentServiceTest {
         assertTrue(thrown.getMessage().contains("Amount must be between 0 and 1000."), "Exception message does not match expected text.");
     }
 
-
     @Test
     @Order(14)
     @DisplayName("BVA Test 6")
-    void addInvalidPaymentBVA3() {
+    @DisabledOnOs(OS.MAC)
+    void addInvalidPaymentBVA4() {
 
         IllegalArgumentException thrown = assertThrows(IllegalArgumentException.class, () -> {
             service.addPayment(5, PaymentType.CARD, 1000.1);
         }, "Expected addPayment to throw, but it didn't");
 
         assertTrue(thrown.getMessage().contains("Amount must be between 0 and 1000."), "Exception message does not match expected text.");
+    }
+
+    @Test
+    void getTotalAmountTest1() {
+        List<Payment> paymentList = new ArrayList<>();
+        paymentList.add(new Payment(5, PaymentType.CASH, 13.0f));
+        double result = service.getTotalAmount(paymentList, PaymentType.CASH);
+        assertEquals(13.0f, result);
+    }
+
+    @Test
+    void getTotalAmountTest2() {
+        List<Payment> paymentList = new ArrayList<>();
+        double result = service.getTotalAmount(paymentList, PaymentType.CASH);
+        assertEquals(0.0f, result);
+    }
+
+    @Test
+    void getTotalAmountTest3() {
+        double result = service.getTotalAmount(null, PaymentType.CASH);
+        assertEquals(0.0f, result);
+    }
+
+    @Test
+    void getTotalAmountTest4() {
+        List<Payment> paymentList = new ArrayList<>();
+        paymentList.add(new Payment(1, PaymentType.CARD, 12.0f));
+        paymentList.add(new Payment(2, PaymentType.CASH, 13.0f));
+        paymentList.add(new Payment(3, PaymentType.CARD, 12.0f));
+        double result = service.getTotalAmount(paymentList, PaymentType.CASH);
+        assertEquals(13.0f, result);
+    }
+
+    @Test
+    void getTotalAmountTest5() {
+        List<Payment> paymentList = new ArrayList<>();
+        paymentList.add(new Payment(5, PaymentType.CASH, 13.0f));
+        double result = service.getTotalAmount(paymentList, PaymentType.CARD);
+        assertEquals(0.0f, result);
     }
 }

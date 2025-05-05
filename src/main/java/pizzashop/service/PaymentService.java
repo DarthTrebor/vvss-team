@@ -6,7 +6,6 @@ import pizzashop.model.PaymentType;
 import pizzashop.repository.MenuRepository;
 import pizzashop.repository.PaymentRepository;
 import pizzashop.validator.PaymentValidator;
-
 import java.util.List;
 
 public class PaymentService {
@@ -26,7 +25,8 @@ public class PaymentService {
     public List<Payment> getPayments(){return payRepo.getAll(); }
 
     public void addPayment(int table, PaymentType type, double amount){
-        paymentValidator.validate(table, type, amount);
+        if (paymentValidator != null)
+            paymentValidator.validate(table, type, amount);
         Payment payment= new Payment(table, type, amount);
         payRepo.add(payment);
     }

@@ -1,21 +1,17 @@
 package pizzashop.service;
 
 import org.junit.jupiter.api.*;
-import org.junit.jupiter.api.condition.DisabledOnOs;
-import org.junit.jupiter.api.condition.OS;
 import pizzashop.model.Payment;
 import pizzashop.model.PaymentType;
 import pizzashop.repository.MenuRepository;
 import pizzashop.repository.PaymentRepository;
 import pizzashop.validator.PaymentValidator;
-
 import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class PaymentServiceTest {
-
     private PaymentService service;
 
     @BeforeEach
@@ -169,7 +165,6 @@ class PaymentServiceTest {
     @Test
     @Order(14)
     @DisplayName("BVA Test 6")
-    @DisabledOnOs(OS.MAC)
     void addInvalidPaymentBVA4() {
 
         IllegalArgumentException thrown = assertThrows(IllegalArgumentException.class, () -> {

@@ -2,7 +2,6 @@ package pizzashop.repository;
 
 import pizzashop.model.Payment;
 import pizzashop.model.PaymentType;
-
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -17,15 +16,6 @@ public class PaymentRepository {
         readPayments();
     }
 
-    public PaymentRepository(boolean initializeEmpty) {
-        if (initializeEmpty) {
-            this.paymentList = new ArrayList<>();
-        } else {
-            this.paymentList = null;
-        }
-        readPayments();
-    }
-
     private void readPayments(){
         File file = new File(filename);
         BufferedReader br = null;
@@ -34,9 +24,13 @@ public class PaymentRepository {
             String line = null;
             while((line=br.readLine())!=null){
                 Payment payment=getPayment(line);
-                paymentList.add(payment);
+                if(payment!=null) {
+                    paymentList.add(payment);
+                }
             }
             br.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }

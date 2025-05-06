@@ -9,25 +9,22 @@ import pizzashop.model.Payment;
 import pizzashop.model.PaymentType;
 import pizzashop.repository.PaymentRepository;
 import pizzashop.validator.PaymentValidator;
-
 import java.util.List;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class PaymentServiceTestStep2 {
 
     PaymentRepository payRepo;
-
     PaymentService service;
-
     PaymentValidator val;
 
     @BeforeEach
     void setUp() {
-        payRepo=new PaymentRepository();
+        payRepo = new PaymentRepository();
         val = new PaymentValidator();
-        service=new PaymentService(null,payRepo,val);
+        service = new PaymentService(null, payRepo, val);
     }
 
     @AfterEach
@@ -38,18 +35,27 @@ class PaymentServiceTestStep2 {
 
     @Test
     void getPayments() {
-        List<Payment> result=service.getPayments();
-        assertEquals(0,result.size());
+        List<Payment> result = service.getPayments();
+        assertEquals(0, result.size());
     }
 
     @Test
     void addPayment() {
-        Payment payment=new Payment(3,PaymentType.CASH,3);
+        // mock Payment
+        Payment payment = mock(Payment.class);
+        when(payment.getTableNumber()).thenReturn(3);
+        when(payment.getType()).thenReturn(PaymentType.CASH);
+        when(payment.getAmount()).thenReturn(3.0);
 
-        service.addPayment(payment.getTableNumber(),payment.getType(),payment.getAmount());
+        // adaugare folosind valorile din mock
+        service.addPayment(payment.getTableNumber(), payment.getType(), payment.getAmount());
 
-        List<Payment> result=service.getPayments();
-        assertEquals(1,result.size());
-        assertEquals(payment,result.get(0));
+        List<Payment> result = service.getPayments();
+        assertEquals(1, result.size());
+
+        Payment storedPayment = result.get(0);
+        assertEquals(3, storedPayment.getTableNumber());
+        assertEquals(PaymentType.CASH, storedPayment.getType());
+        assertEquals(3.0, storedPayment.getAmount());
     }
 }
